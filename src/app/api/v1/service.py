@@ -1,10 +1,10 @@
 import logging
 import time
+from typing import Type
 import uuid
 
 from catboost import CatBoostRegressor
-from fastapi import BackgroundTasks
-from sqlalchemy.ext.asyncio import async_sessionmaker
+from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
 from app.api.v1.schemas import (
     BatchPredictionRequest,
@@ -13,7 +13,7 @@ from app.api.v1.schemas import (
     PredictionResponse,
 )
 from app.core.config import settings
-from app.core.exceptions import DatabaseError, PredictionServiceError
+from app.core.exceptions import PredictionServiceError
 from app.models import Prediction
 from app.prediction_repository import PredictionRepository
 
@@ -35,17 +35,18 @@ class PredictionService:
     def __init__(
         self,
         model: CatBoostRegressor,
-        session_factory: async_sessionmaker,
+        session_factory: async_sessionmaker[AsyncSession],
+        repository_class: Type[PredictionRepository] = PredictionRepository,
     ):
         self.model = model
-        self.session_factory = session_factory
         self.model_version = settings.artifact_file_name
+        self.session_factory = session_factory
+        self.repository_class = repository_class
 
     async def predict_single(
         self,
         request: PredictionRequest,
-        background_tasks: BackgroundTasks,
-    ) -> PredictionResponse:
+    ):
         """
         Raises:
             PredictionServiceError: _description_
@@ -72,22 +73,15 @@ class PredictionService:
             latency_ms=latency_ms,
         )
 
-        background_tasks.add_task(
-            self._save_prediction,
-            prediction=prediction,
-        )
-
-        return PredictionResponse(
+        response = PredictionResponse(
             score=score,
             request_id=request_id,
             latency_ms=latency_ms,
         )
 
-    async def predict_batch(
-        self,
-        request: BatchPredictionRequest,
-        background_tasks: BackgroundTasks,
-    ) -> BatchPredictionResponse:
+        return response, prediction
+
+    async def predict_batch(self, request: BatchPredictionRequest):
         """
         Raises:
             PredictionServiceError:
@@ -116,39 +110,36 @@ class PredictionService:
             for item, score in zip(request.instances, scores)
         ]
 
-        background_tasks.add_task(
-            self._save_batch,
-            predictions=predictions,
-        )
-
-        return BatchPredictionResponse(
+        response = BatchPredictionResponse(
             scores=scores,
             request_id=request_id,
             latency_ms=latency_ms,
         )
 
-    async def _save_prediction(self, prediction: Prediction) -> None:
-        try:
-            async with self.session_factory() as session:
-                repository = PredictionRepository(session=session)
-                await repository.save(prediction)
-                await session.commit()
-        except Exception as e:
-            logger.error(f"Failed to save prediction {prediction.request_id}: {e}")
-            raise DatabaseError(str(e))
-
-    async def _save_batch(self, predictions: list[Prediction]) -> None:
-        try:
-            async with self.session_factory() as session:
-                repository = PredictionRepository(session=session)
-                await repository.save_batch(predictions)
-                await session.commit()
-        except Exception as e:
-            logger.error(f"Failed to save batch: {e}")
-            raise DatabaseError(str(e))
+        return response, predictions
 
     def _features_to_list(self, instance) -> list[str]:
         return [getattr(instance, name) for name in FEATURE_NAMES]
 
     def _features_to_dict(self, instance) -> dict:
         return {name: getattr(instance, name) for name in FEATURE_NAMES}
+
+    async def save_prediction_bg(self, prediction: Prediction) -> None:
+        try:
+            async with self.session_factory() as session:
+                repository = self.repository_class(session=session)
+                await repository.save(prediction)
+                await session.commit()
+        except Exception as e:
+            logger.error(
+                f"Failed to save prediction {prediction.request_id} in background: {e}"
+            )
+
+    async def save_batch_bg(self, predictions: list[Prediction]) -> None:
+        try:
+            async with self.session_factory() as session:
+                repository = self.repository_class(session=session)
+                await repository.save_batch(predictions)
+                await session.commit()
+        except Exception as e:
+            logger.error(f"Failed to save batch in background: {e}")

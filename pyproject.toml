@@ -17,9 +17,11 @@ dependencies = [
     "pandas>=3.0.5",
     "pydantic>=2.13.5",
     "pydantic-settings>=2.15.0",
+    "pytest-asyncio>=1.4.0",
     "pytest-mock>=3.15.1",
     "scikit-learn>=1.9.1",
     "sqlalchemy>=2.0.52",
+    "testcontainers[postgresql]>=4.15.0",
     "uuid7>=0.1.0",
     "uvicorn>=0.53.0",
 ]
@@ -41,3 +43,12 @@ module = [
     "uuid_extensions.*",
 ]
 ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+markers = [
+    "smoke: smoke тесты. Требуют запущенной БД и файла модели. Меняют состояния бд",
+    "integration: интеграционные тесты в test containers"
+]
+addopts = "-m 'not smoke'"

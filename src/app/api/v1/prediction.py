@@ -9,9 +9,8 @@ from app.api.v1.schemas import (
     PredictionRequest,
 )
 from app.api.v1.service import PredictionService
-from app.core.database import async_session, get_session
+from app.core.database import get_async_session
 from app.core.dependencies import get_model
-from app.prediction_repository import PredictionRepository
 
 router = APIRouter(prefix="/api/v1", tags=["v1: Predictions"])
 
@@ -21,6 +20,7 @@ ModelDep = Annotated[CatBoostRegressor, Depends(get_model)]
 
 def get_prediction_service(
     model: ModelDep,
+    async_session: async_sessionmaker[AsyncSession] = Depends(get_async_session),
 ) -> PredictionService:
     return PredictionService(model=model, session_factory=async_session)
 
@@ -34,7 +34,11 @@ async def predict(
     background_tasks: BackgroundTasks,
     service: ServiceDep,
 ):
-    return await service.predict_single(request, background_tasks)
+    response, prediction = await service.predict_single(request)
+
+    background_tasks.add_task(service.save_prediction_bg, prediction)
+
+    return response
 
 
 @router.post("/predict/batch")
@@ -43,4 +47,8 @@ async def predict_batch(
     background_tasks: BackgroundTasks,
     service: PredictionService = Depends(get_prediction_service),
 ):
-    return await service.predict_batch(request, background_tasks)
+    response, predictions = await service.predict_batch(request)
+
+    background_tasks.add_task(service.save_batch_bg, predictions)
+
+    return response
