@@ -17,8 +17,10 @@ dependencies = [
     "pandas>=3.0.5",
     "pydantic>=2.13.5",
     "pydantic-settings>=2.15.0",
+    "pytest-mock>=3.15.1",
     "scikit-learn>=1.9.1",
     "sqlalchemy>=2.0.52",
+    "uuid7>=0.1.0",
     "uvicorn>=0.53.0",
 ]
 
@@ -34,5 +36,8 @@ dev = [
 where = ["src"]
 
 [[tool.mypy.overrides]]
-module = "catboost.*"
+module = [
+    "catboost.*",
+    "uuid_extensions.*",
+]
 ignore_missing_imports = true

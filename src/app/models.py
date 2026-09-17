@@ -1,9 +1,9 @@
 import uuid
 from datetime import datetime, timezone
 
-from sqlalchemy import Boolean, DateTime, Float, String
-from sqlalchemy.dialects.postgresql import JSONB, UUID
+from sqlalchemy import Boolean, DateTime, Float, String, Uuid, JSON
 from sqlalchemy.orm import Mapped, mapped_column
+from uuid_extensions import uuid7
 
 from app.core.database import Base
 
@@ -12,9 +12,9 @@ class Prediction(Base):
     __tablename__ = "predictions"
 
     id: Mapped[uuid.UUID] = mapped_column(
-        UUID(as_uuid=True),
+        Uuid(as_uuid=True),
         primary_key=True,
-        default=uuid.uuid4,
+        default=uuid7,
     )
     request_id: Mapped[str] = mapped_column(
         String(36),
@@ -22,10 +22,9 @@ class Prediction(Base):
         nullable=False,
         index=True,
     )
-    
 
     features: Mapped[dict] = mapped_column(
-        JSONB,
+        JSON,
         nullable=False,
     )
     score: Mapped[float] = mapped_column(
