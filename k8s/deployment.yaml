@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: housing-service
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: housing
+  template:
+    metadata:
+      labels:
+        app: housing
+    spec:
+      containers:
+        - name: api
+          image: housing-service:1.0
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8000
+          envFrom:
+            - secretRef:
+                name: housing-env
+          startupProbe:
+            httpGet: {path: /health, port: 8000}
+            failureThreshold: 30
+            periodSeconds: 2
+          livenessProbe:
+            httpGet: {path: /health, port: 8000}
+            periodSeconds: 10
+          readinessProbe:
+            httpGet: {path: /ready, port: 8000}
+            periodSeconds: 5
+          resources:
+            requests: {cpu: "1", memory: 1000Mi}
+            limits: {cpu: "1", memory: 1000Mi}
