@@ -57,7 +57,7 @@ class PredictionService:
             score = float(self.model.predict(features_list)[0])
         except Exception as e:
             logger.error(f"Model prediction failed: {e}")
-            raise PredictionServiceError(str(e))
+            raise PredictionServiceError(str(e)) from None
 
         latency_ms = round((time.perf_counter() - t0) * 1000, 2)
         request_id = str(uuid.uuid4())
@@ -92,7 +92,7 @@ class PredictionService:
             scores = self.model.predict(features_list).tolist()
         except Exception as e:
             logger.error(f"Batch prediction failed: {e}")
-            raise PredictionServiceError(str(e))
+            raise PredictionServiceError(str(e)) from None
 
         latency_ms = round((time.perf_counter() - t0) * 1000, 2)
         request_id = str(uuid.uuid4())
@@ -106,7 +106,7 @@ class PredictionService:
                 model_version=self.model_version,
                 latency_ms=latency_ms,
             )
-            for item, score in zip(request.instances, scores)
+            for item, score in zip(request.instances, scores, strict=True)
         ]
 
         response = BatchPredictionResponse(
