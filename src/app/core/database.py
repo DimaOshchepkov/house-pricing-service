@@ -23,6 +23,7 @@ async_session = async_sessionmaker(
     expire_on_commit=False,
 )
 
+
 def get_async_session():
     return async_session
 

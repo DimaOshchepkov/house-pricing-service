@@ -3,13 +3,18 @@ from fastapi.testclient import TestClient
 
 from app.main import app
 
-
 pytestmark = pytest.mark.smoke
 
 
 SAMPLE_PAYLOAD = {
-    "MedInc": 8.32, "HouseAge": 41, "AveRooms": 6.98, "AveBedrms": 1.02,
-    "Population": 322, "AveOccup": 2.55, "Latitude": 37.88, "Longitude": -122.23,
+    "MedInc": 8.32,
+    "HouseAge": 41,
+    "AveRooms": 6.98,
+    "AveBedrms": 1.02,
+    "Population": 322,
+    "AveOccup": 2.55,
+    "Latitude": 37.88,
+    "Longitude": -122.23,
 }
 
 

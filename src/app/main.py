@@ -4,12 +4,12 @@ from catboost import CatBoostRegressor
 from fastapi import Depends, FastAPI, HTTPException, Request
 from fastapi.responses import JSONResponse
 
+from app.api.v1 import prediction as predictions_v1_router
 from app.core.config import settings
 from app.core.database import engine
 from app.core.dependencies import get_model
 from app.core.exceptions import AppError
 from app.schemas import HealthResponse, ReadyResponse
-from app.api.v1 import prediction as predictions_v1_router
 
 
 @asynccontextmanager
@@ -24,6 +24,7 @@ async def lifespan(app: FastAPI):
 app = FastAPI(title="House pricing", version="0.1.0", lifespan=lifespan)
 
 app.include_router(predictions_v1_router.router)
+
 
 @app.exception_handler(AppError)
 async def app_error_handler(request: Request, exc: AppError):

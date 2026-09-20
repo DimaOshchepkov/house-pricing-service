@@ -1,6 +1,5 @@
 import logging
 import time
-from typing import Type
 import uuid
 
 from catboost import CatBoostRegressor
@@ -36,7 +35,7 @@ class PredictionService:
         self,
         model: CatBoostRegressor,
         session_factory: async_sessionmaker[AsyncSession],
-        repository_class: Type[PredictionRepository] = PredictionRepository,
+        repository_class: type[PredictionRepository] = PredictionRepository,
     ):
         self.model = model
         self.model_version = settings.artifact_file_name

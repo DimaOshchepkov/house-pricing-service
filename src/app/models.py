@@ -1,7 +1,7 @@
 import uuid
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
-from sqlalchemy import Boolean, DateTime, Float, String, Uuid, JSON
+from sqlalchemy import JSON, Boolean, DateTime, Float, String, Uuid
 from sqlalchemy.orm import Mapped, mapped_column
 from uuid_extensions import uuid7
 
@@ -46,5 +46,5 @@ class Prediction(Base):
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         nullable=False,
-        default=lambda: datetime.now(timezone.utc),
+        default=lambda: datetime.now(UTC),
     )

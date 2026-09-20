@@ -34,7 +34,6 @@ class TestPredictionRepository:
         assert saved_prediction.score == 2.5
         assert saved_prediction.features["MedInc"] == 8.32
 
-
     async def test_save_batch(
         self,
         db_session: AsyncSession,

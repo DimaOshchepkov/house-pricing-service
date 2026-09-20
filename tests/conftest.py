@@ -88,7 +88,6 @@ def mock_session_factory(mock_session: AsyncMock) -> MagicMock:
     return factory
 
 
-
 @pytest.fixture
 def mock_repository_class() -> MagicMock:
     repo_class = MagicMock()
