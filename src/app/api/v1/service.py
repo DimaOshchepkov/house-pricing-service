@@ -42,7 +42,7 @@ class PredictionService:
         self.session_factory = session_factory
         self.repository_class = repository_class
 
-    async def predict_single(
+    def predict_single(
         self,
         request: PredictionRequest,
     ):
@@ -80,7 +80,7 @@ class PredictionService:
 
         return response, prediction
 
-    async def predict_batch(self, request: BatchPredictionRequest):
+    def predict_batch(self, request: BatchPredictionRequest):
         """
         Raises:
             PredictionServiceError:

@@ -1,3 +1,4 @@
+import asyncio
 from typing import Annotated
 
 from catboost import CatBoostRegressor
@@ -34,7 +35,7 @@ async def predict(
     background_tasks: BackgroundTasks,
     service: ServiceDep,
 ):
-    response, prediction = await service.predict_single(request)
+    response, prediction = await asyncio.to_thread(service.predict_single, request)
 
     background_tasks.add_task(service.save_prediction_bg, prediction)
 
@@ -47,7 +48,7 @@ async def predict_batch(
     background_tasks: BackgroundTasks,
     service: PredictionService = Depends(get_prediction_service),
 ):
-    response, predictions = await service.predict_batch(request)
+    response, predictions = await asyncio.to_thread(service.predict_batch, request)
 
     background_tasks.add_task(service.save_batch_bg, predictions)
 
