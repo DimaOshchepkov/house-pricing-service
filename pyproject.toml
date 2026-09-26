@@ -48,7 +48,6 @@ ignore_missing_imports = true
 asyncio_mode = "auto"
 testpaths = ["tests"]
 markers = [
-    "smoke: smoke тесты. Требуют запущенной БД и файла модели. Меняют состояния бд",
     "integration: интеграционные тесты в test containers"
 ]
-addopts = "-m 'not smoke'"
+

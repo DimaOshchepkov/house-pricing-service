@@ -76,6 +76,7 @@ class PredictionService:
             score=score,
             request_id=request_id,
             latency_ms=latency_ms,
+            model_version=self.model_version,
         )
 
         return response, prediction
@@ -113,6 +114,7 @@ class PredictionService:
             scores=scores,
             request_id=request_id,
             latency_ms=latency_ms,
+            model_version=self.model_version,
         )
 
         return response, predictions

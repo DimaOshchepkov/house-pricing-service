@@ -59,7 +59,7 @@ class TestPredictBatch:
             ]
         )
 
-        response, predictions = await service.predict_batch(batch)
+        response, predictions = service.predict_batch(batch)
 
         assert response.scores == [2.5, 1.8]
         assert len(predictions) == 2

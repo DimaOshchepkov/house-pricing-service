@@ -1,9 +1,16 @@
 # Housing pricing service
 
 ## Get started
+
 ```bash
 cp .env.example .env
 docker compose up
+```
+Запустить notebooks/house_pricing.ipynb
+Появится файл artifacts/model_v*.cbm
+указать в .env
+```.env
+ARTIFACT_FILE_NAME=model_v20260914_165745.cbm
 ```
 
 Swagger ui:
@@ -16,8 +23,7 @@ uv sync
 uv run pytest
 ```
 
-## ДЗ 
-Пример данных таблицы predictions
+## Пример данных таблицы predictions
 
 aa346c03-23d1-448f-94d6-2be9b770d476,225a4cb6-6b01-49bb-9dd0-aa5143361f53,"{""MedInc"": 3.53, ""AveOccup"": 2.82, ""AveRooms"": 5.23, ""HouseAge"": 29, ""Latitude"": 34.26, ""AveBedrms"": 1.05, ""Longitude"": -118.49, ""Population"": 1166}",2.115159566047026,true,model_v20260914_165745.cbm,4.48,2026-09-16 19:55:58.714128 +00:00
 06aabd3c-a5bd-7a8f-8000-afdac89a066d,abc6387c-629c-46bc-b674-fc708e2275de,"{""MedInc"": 3.53, ""HouseAge"": 29, ""AveRooms"": 5.23, ""AveBedrms"": 1.05, ""Population"": 1166, ""AveOccup"": 2.82, ""Latitude"": 34.26, ""Longitude"": -118.49}",2.115159566047026,true,model_v20260914_165745.cbm,8.88,2026-09-17 11:49:30.358853 +00:00
