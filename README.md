@@ -1,3 +1,5 @@
+		
+
 # Housing pricing service
 
 ## Get started
@@ -6,9 +8,11 @@
 cp .env.example .env
 docker compose up
 ```
+
 Запустить notebooks/house_pricing.ipynb
 Появится файл artifacts/model_v*.cbm
 указать в .env
+
 ```.env
 ARTIFACT_FILE_NAME=model_v20260914_165745.cbm
 ```
@@ -16,17 +20,39 @@ ARTIFACT_FILE_NAME=model_v20260914_165745.cbm
 Swagger ui:
 `http://localhost:8000/docs`
 
+## Запустить тесты:
 
-Запустить тесты:
 ```bash
 uv sync
 uv run pytest
 ```
 
+## Запустить kubernetes
+
+```bash
+cp .env.kubernetes.example .env.kubernetes.example
+```
+Поставить нужную модель
+```bash
+ARTIFACT_FILE_NAME=model_v20260914_165745.cbm
+```
+
+Запустить через tilt
+```bash
+tilt up
+```
+
+Проверка: http://localhost:8080/health
+
+В целом, можно разрабатывать в kubernetes
+
 ## Примечание
+
 - compose монтирует ./src для hotheload
-- 
+
+
 ## Пример данных таблицы predictions
+
 select * from predictions
 
 aa346c03-23d1-448f-94d6-2be9b770d476,225a4cb6-6b01-49bb-9dd0-aa5143361f53,"{""MedInc"": 3.53, ""AveOccup"": 2.82, ""AveRooms"": 5.23, ""HouseAge"": 29, ""Latitude"": 34.26, ""AveBedrms"": 1.05, ""Longitude"": -118.49, ""Population"": 1166}",2.115159566047026,true,model_v20260914_165745.cbm,4.48,2026-09-16 19:55:58.714128 +00:00
