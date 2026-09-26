@@ -866,11 +866,8 @@ dependencies = [
     { name = "pandas" },
     { name = "pydantic" },
     { name = "pydantic-settings" },
-    { name = "pytest-asyncio" },
-    { name = "pytest-mock" },
     { name = "scikit-learn" },
     { name = "sqlalchemy" },
-    { name = "testcontainers" },
     { name = "uuid7" },
     { name = "uvicorn" },
 ]
@@ -880,7 +877,10 @@ dev = [
     { name = "httpx" },
     { name = "locust" },
     { name = "pytest" },
+    { name = "pytest-asyncio" },
+    { name = "pytest-mock" },
     { name = "ruff" },
+    { name = "testcontainers" },
 ]
 
 [package.metadata]
@@ -893,11 +893,8 @@ requires-dist = [
     { name = "pandas", specifier = ">=3.0.5" },
     { name = "pydantic", specifier = ">=2.13.5" },
     { name = "pydantic-settings", specifier = ">=2.15.0" },
-    { name = "pytest-asyncio", specifier = ">=1.4.0" },
-    { name = "pytest-mock", specifier = ">=3.15.1" },
     { name = "scikit-learn", specifier = ">=1.9.1" },
     { name = "sqlalchemy", specifier = ">=2.0.52" },
-    { name = "testcontainers", extras = ["postgresql"], specifier = ">=4.15.0" },
     { name = "uuid7", specifier = ">=0.1.0" },
     { name = "uvicorn", specifier = ">=0.53.0" },
 ]
@@ -907,7 +904,10 @@ dev = [
     { name = "httpx", specifier = ">=0.28.1" },
     { name = "locust", specifier = ">=2.46.5" },
     { name = "pytest", specifier = ">=9.1.1" },
+    { name = "pytest-asyncio", specifier = ">=1.4.0" },
+    { name = "pytest-mock", specifier = ">=3.15.1" },
     { name = "ruff", specifier = ">=0.16.7" },
+    { name = "testcontainers", extras = ["postgresql"], specifier = ">=4.15.0" },
 ]
 
 [[package]]

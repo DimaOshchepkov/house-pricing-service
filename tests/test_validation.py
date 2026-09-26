@@ -250,7 +250,8 @@ class TestBatchPredictionRequest:
     def test_extra_fields_in_batch_rejected(self) -> None:
         with pytest.raises(ValidationError) as exc_info:
             BatchPredictionRequest(
-                instances=[PredictionRequest(**valid_house_data())], extra_field="bad"
+                instances=[PredictionRequest(**valid_house_data())],
+                extra_field="bad",  # type: ignore
             )
 
         errors = exc_info.value.errors()
