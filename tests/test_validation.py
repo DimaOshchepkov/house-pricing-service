@@ -3,11 +3,9 @@ from pydantic import ValidationError
 
 from app.api.v1.schemas import BatchPredictionRequest, PredictionRequest
 
-# ── Хелпер: базовый валидный набор данных ──
-
 
 def valid_house_data(**overrides) -> dict:
-    """Возвращает валидный словарь для PredictionRequest с возможностью переопределения."""
+
     data = {
         "MedInc": 3.53,
         "HouseAge": 29,
