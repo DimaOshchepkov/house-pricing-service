@@ -106,7 +106,19 @@ jobs:
 
       - name: smoke тесты
         run: |
-            kubectl port-forward svc/housing-service 8080:80
+            kubectl port-forward svc/housing-service 8080:80 > /tmp/port-forward.log 2>&1 &
+            PF_PID=$!
+
+            sleep 3
+
+            echo "=== Port-forward ==="
+            cat /tmp/port-forward.log
+
+            echo "=== Health ==="
+            curl --fail -sS http://localhost:8080/health
+            echo
+
+            echo "=== Predict ==="
             RESPONSE=$(curl -sS \
             -w '\n%{http_code}' \
             -X POST http://localhost:8080/v1/predict \
@@ -117,14 +129,18 @@ jobs:
             STATUS=$(echo "$RESPONSE" | tail -n1)
 
             echo "HTTP $STATUS"
+            echo "Response:"
             echo "$BODY"
 
             if [ "$STATUS" -lt 200 ] || [ "$STATUS" -ge 300 ]; then
+            echo "Prediction request failed"
             exit 1
             fi
 
             echo "$BODY" | python3 -c \
             "import json,sys; print('Prediction OK:', json.load(sys.stdin))"
+
+            kill "$PF_PID"
       
       - name: диагностика
         if: failure()
