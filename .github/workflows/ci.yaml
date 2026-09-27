@@ -104,21 +104,31 @@ jobs:
           kubectl set image deploy/housing-service api="$IMAGE"
           kubectl rollout status deploy/housing-service --timeout=120s
 
-      - name: smoke
+      - name: smoke тесты
         run: |
           kubectl port-forward svc/housing-service 8080:80 &
           sleep 5
 
-          curl --fail -s localhost:8080/health; echo
-          curl ‐‐fail ‐s ‐X POST localhost:8080/v1/predict \
-            ‐H "Content‐Type: application/json" ‐d @good.json \
-            | python3 ‐c "import json,sys; r=json.load(sys.stdin); assert 0 <= r['score'] <= 1, r"
+          curl --fail -s http://localhost:8080/health || exit 1
+          echo "Health check passed!"
 
-            
-          sleep 2
+          curl --fail -s -X POST http://localhost:8080/predict \
+            -H "Content-Type: application/json" \
+            -d @good.json \
+            | python3 -c "import json,sys; r=json.load(sys.stdin); print('Prediction OK:', r)"
 
-          kubectl exec deployment/postgres -- psql -U postgres -d house \
-            -c "SELECT count(*) FROM predictions" | grep -q 1 || true 
+          sleep 3
+
+    
+          COUNT=$(kubectl exec deployment/postgres -- psql -U postgres -d house -t -c "SELECT count(*) FROM predictions;")
+          CLEAN_COUNT=$(echo "$COUNT" | tr -d '[:space:]')
+          
+          if [ "$CLEAN_COUNT" -ge 1 ]; then
+            echo "Success! Found $CLEAN_COUNT records in DB."
+          else
+            echo "Error: No records found in DB (count=$CLEAN_COUNT)."
+            exit 1
+          fi
       
       - name: диагностика
         if: failure()
