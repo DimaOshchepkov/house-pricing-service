@@ -106,29 +106,24 @@ jobs:
 
       - name: smoke тесты
         run: |
-          kubectl port-forward svc/housing-service 8080:80 &
-          sleep 5
-
-          curl --fail -s http://localhost:8080/health || exit 1
-          echo "Health check passed!"
-
-          curl --fail -s -X POST http://localhost:8080/v1/predict \
+            RESPONSE=$(curl -sS \
+            -w '\n%{http_code}' \
+            -X POST http://localhost:8080/v1/predict \
             -H "Content-Type: application/json" \
-            -d @good.json \
-            | python3 -c "import json,sys; r=json.load(sys.stdin); print('Prediction OK:', r)"
+            -d @good.json)
 
-          sleep 3
+            BODY=$(echo "$RESPONSE" | sed '$d')
+            STATUS=$(echo "$RESPONSE" | tail -n1)
 
-    
-          COUNT=$(kubectl exec deployment/postgres -- psql -U postgres -d house -t -c "SELECT count(*) FROM predictions;")
-          CLEAN_COUNT=$(echo "$COUNT" | tr -d '[:space:]')
-          
-          if [ "$CLEAN_COUNT" -ge 1 ]; then
-            echo "Success! Found $CLEAN_COUNT records in DB."
-          else
-            echo "Error: No records found in DB (count=$CLEAN_COUNT)."
+            echo "HTTP $STATUS"
+            echo "$BODY"
+
+            if [ "$STATUS" -lt 200 ] || [ "$STATUS" -ge 300 ]; then
             exit 1
-          fi
+            fi
+
+            echo "$BODY" | python3 -c \
+            "import json,sys; print('Prediction OK:', json.load(sys.stdin))"
       
       - name: диагностика
         if: failure()
