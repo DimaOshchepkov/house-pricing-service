@@ -42,3 +42,6 @@ kind load docker-image house-pricing-service:latest
 
 Ошибка при сборке:
 Error: buildx failed with: ERROR: failed to build: invalid tag "ghcr.io/DimaOshchepkov/housing-service/sha-642ffa366ef00b55789104fa2d36664e43d01408": repository name must be lowercase
+
+ERROR: no nodes found for cluster "cli"
+Странно, вроде просто скопировал
