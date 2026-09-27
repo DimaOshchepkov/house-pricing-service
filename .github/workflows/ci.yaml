@@ -17,7 +17,8 @@ jobs:
           --health-interval 5s --health-timeout 3s --health-retries 10
       
     env:
-      DATABASE_URL: postgresql://postgres:test@localhost:5432/house
+      DATABASE_URL: "postgresql+asyncpg://postgres:postgres@localhost:5432/house"
+      ARTIFACT_FILE_NAME: "model_v20260914_195522.cbm"
 
 
     steps:
@@ -82,7 +83,7 @@ jobs:
         run: |
           kubectl create secret generic churn-secrets \
           --from-literal=POSTGRES_PASSWORD="$DB_PASSWORD" \
-          --from-literal=DATABASE_URL="postgresql://postgres:$DB_PASSWORD@postgres:5432/churn"
+          --from-literal=DATABASE_URL="postgresql+asyncpg://postgres:$DB_PASSWORD@postgres:5432/churn"
       
       - name: база
         run: |
