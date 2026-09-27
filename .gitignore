@@ -196,5 +196,5 @@ pyrightconfig.json
 # End of https://www.toptal.com/developers/gitignore/api/python,visualstudiocode
 
 #my
-artifacts/*
+
 notebooks/catboost_info
