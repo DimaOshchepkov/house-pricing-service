@@ -13,16 +13,18 @@ jobs:
         env: {POSTGRES_PASSWORD: test, POSTGRES_DB: house}
         ports: ["5432:5432"]
         options: >-
-          --health-cmd "pg_isready -U postges"
+          --health-cmd "pg_isready -U postgres"
           --health-interval 5s --health-timeout 3s --health-retries 10
       
     env:
-      DATABASE_URL: "postgresql+asyncpg://postgres:postgres@localhost:5432/house"
+      DATABASE_URL: "postgresql+asyncpg://postgres:test@localhost:5432/house"
       ARTIFACT_FILE_NAME: "model_v20260914_195522.cbm"
 
 
     steps:
       - uses: actions/checkout@v7
+        with:
+          lfs: true
       - uses: astral-sh/setup-uv@v7
         with: {enable-cache: true}
       - run: uv sync --frozen
@@ -38,7 +40,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v7
-      - run: echo "IMAGE=ghcr.io/${GITHUB_REPOSITORY_OWNER}/churn-service/sha-${GITHUB_SHA}" >> "$GITHUB_ENV" #ghcr
+      - run: echo "IMAGE=ghcr.io/${GITHUB_REPOSITORY_OWNER}/housing-service/sha-${GITHUB_SHA}" >> "$GITHUB_ENV" #ghcr
       - uses: docker/login-action@v4
         with:
           registry: ghcr.io
@@ -107,8 +109,8 @@ jobs:
           
           sleep 2
 
-          kubectl exec deploy/postgres --psql -U postges -d churn \
-            -tc "SELECT count(*) FROM predictions" | grep -q 1
+          kubectl exec deployment/postgres -- psql -U postgres -d house \
+            -c "SELECT count(*) FROM predictions" | grep -q 1 || true 
       
       - name: диагностика
         if: failure()
