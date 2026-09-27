@@ -112,7 +112,7 @@ jobs:
           curl --fail -s http://localhost:8080/health || exit 1
           echo "Health check passed!"
 
-          curl --fail -s -X POST http://localhost:8080/predict \
+          curl --fail -s -X POST http://localhost:8080/v1/predict \
             -H "Content-Type: application/json" \
             -d @good.json \
             | python3 -c "import json,sys; r=json.load(sys.stdin); print('Prediction OK:', r)"
