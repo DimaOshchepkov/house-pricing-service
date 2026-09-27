@@ -34,7 +34,7 @@ cp .env.kubernetes.example .env.kubernetes.example
 ```
 Поставить нужную модель
 ```bash
-ARTIFACT_FILE_NAME=model_v20260914_165745.cbm
+ARTIFACT_FILE_NAME=model_v*.cbm
 ```
 
 Запустить через tilt
