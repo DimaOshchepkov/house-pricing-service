@@ -26,12 +26,14 @@ spec:
     spec:
       containers:
         - name: postgres
-          image: postgres:15-alpine
+          image: postgres:16
           ports:
             - containerPort: 5432
           envFrom:
+            - configMapRef:
+              name: housing-config
             - secretRef:
-                name: housing-env
+              name: housing-env
           startupProbe:
             exec:
               command: ["pg_isready", "-U", "$(POSTGRES_USER)", "-d", "$(POSTGRES_DB)"]

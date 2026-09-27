@@ -13,10 +13,7 @@ docker_build(
     ]
 )
 
-
-k8s_yaml('k8s/postgres.yaml')
-k8s_yaml('k8s/deployment.yaml')
-k8s_yaml('k8s/service.yaml')
+k8s_yaml('k8s/*.yaml')
 
 k8s_resource('postgres')
 k8s_resource(
