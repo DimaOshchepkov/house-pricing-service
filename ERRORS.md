@@ -55,3 +55,13 @@ Error: Process completed with exit code 1.
 
 
 Ошибка отсутпов
+
+Run kubectl apply -f k8s/configmap.yaml
+configmap/housing-config created
+service/***-service created
+deployment.apps/*** created
+Waiting for deployment "***" rollout to finish: 0 of 1 updated replicas are available...
+error: timed out waiting for the condition
+Error: Process completed with exit code 1.
+
+неверный секрет в ci
