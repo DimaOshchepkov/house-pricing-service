@@ -3,9 +3,6 @@ from fastapi.testclient import TestClient
 
 from app.main import app
 
-pytestmark = pytest.mark.smoke
-
-
 SAMPLE_PAYLOAD = {
     "MedInc": 8.32,
     "HouseAge": 41,

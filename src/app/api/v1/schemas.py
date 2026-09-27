@@ -1,7 +1,9 @@
 from pydantic import BaseModel, Field, model_validator
 
+from app.core.pydantic import StrictBaseModel
 
-class PredictionRequest(BaseModel):
+
+class PredictionRequest(StrictBaseModel):
     MedInc: float = Field(
         description="Median income in block group (in $10,000)",
         examples=[3.53],
@@ -61,7 +63,7 @@ class PredictionRequest(BaseModel):
         return self
 
 
-class BatchPredictionRequest(BaseModel):
+class BatchPredictionRequest(StrictBaseModel):
     instances: list[PredictionRequest] = Field(
         description="List of houses to predict",
         min_length=1,
@@ -73,9 +75,11 @@ class PredictionResponse(BaseModel):
     score: float = Field(description="Predicted house value (in $100,000)")
     request_id: str = Field(description="Unique request identifier")
     latency_ms: float = Field(description="Processing time in milliseconds")
+    model_version: str = Field(description="Model version")
 
 
 class BatchPredictionResponse(BaseModel):
     scores: list[float] = Field(description="List of predicted values")
     request_id: str = Field(description="Unique request identifier")
     latency_ms: float = Field(description="Batch processing time in milliseconds")
+    model_version: str = Field(description="Model version")
