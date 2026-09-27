@@ -19,6 +19,8 @@ spec:
           ports:
             - containerPort: 8000
           envFrom:
+            - configMapRef:
+                name: housing-config
             - secretRef:
                 name: housing-env
           startupProbe:
