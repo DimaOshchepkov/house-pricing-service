@@ -67,3 +67,5 @@ Error: Process completed with exit code 1.
 неверный секрет в ci
 
 Неверное название postgres, не посмотрел как называется сервис.
+
+Не добавил json для smoke теста
