@@ -45,3 +45,13 @@ Error: buildx failed with: ERROR: failed to build: invalid tag "ghcr.io/DimaOshc
 
 ERROR: no nodes found for cluster "cli"
 Странно, вроде просто скопировал
+
+
+Run kubectl apply -f k8s/configmap.yaml
+configmap/housing-config created
+service/***-service created
+Error from server (BadRequest): error when creating "k8s/***.yaml": Deployment in version "v1" cannot be handled as a Deployment: strict decoding error: unknown field "spec.template.spec.containers[0].envFrom[0].name", unknown field "spec.template.spec.containers[0].envFrom[1].name"
+Error: Process completed with exit code 1.
+
+
+Ошибка отсутпов
