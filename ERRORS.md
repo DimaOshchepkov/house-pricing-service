@@ -39,3 +39,6 @@ kind load docker-image house-pricing-service:latest
 Не получилось слить в main. упали тесты
 Отсутсвует модель. Это критично
 Временно буду хранить в lfs
+
+Ошибка при сборке:
+Error: buildx failed with: ERROR: failed to build: invalid tag "ghcr.io/DimaOshchepkov/housing-service/sha-642ffa366ef00b55789104fa2d36664e43d01408": repository name must be lowercase
