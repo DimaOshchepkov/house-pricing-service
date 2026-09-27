@@ -106,6 +106,7 @@ jobs:
 
       - name: smoke тесты
         run: |
+            kubectl port-forward svc/housing-service 8080:80
             RESPONSE=$(curl -sS \
             -w '\n%{http_code}' \
             -X POST http://localhost:8080/v1/predict \
