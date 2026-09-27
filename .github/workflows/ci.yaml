@@ -40,7 +40,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v7
-      - run: echo "IMAGE=ghcr.io/${GITHUB_REPOSITORY_OWNER,,}/housing-service/sha-${GITHUB_SHA}" >> "$GITHUB_ENV"
+      - run: echo "IMAGE=ghcr.io/${GITHUB_REPOSITORY,,}:sha-${GITHUB_SHA}" >> "$GITHUB_ENV"
       - uses: docker/login-action@v4
         with:
           registry: ghcr.io
@@ -63,7 +63,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v7
-      - run: echo "IMAGE=ghcr.io/${GITHUB_REPOSITORY_OWNER,,}/housing-service/sha-${GITHUB_SHA}" >> "$GITHUB_ENV" #ghcr
+      - run: echo "IMAGE=ghcr.io/${GITHUB_REPOSITORY,,}:sha-${GITHUB_SHA}" >> "$GITHUB_ENV"
       - uses: docker/login-action@v4
         with:
           registry: ghcr.io
@@ -83,13 +83,13 @@ jobs:
         env:
           DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
         run: |
+          kubectl apply -f k8s/configmap.yaml
           kubectl create secret generic housing-env \
           --from-literal=POSTGRES_PASSWORD="$DB_PASSWORD" \
           --from-literal=DATABASE_URL="postgresql+asyncpg://postgres:$DB_PASSWORD@postgres:5432/house"
       
       - name: база
         run: |
-          kubectl apply -f k8s/configmap.yaml
           kubectl apply -f k8s/postgres.yaml
           kubectl rollout status deploy/postgres --timeout=180s
       
@@ -118,5 +118,5 @@ jobs:
 
         run: |
           kubectl get pods -o wide
-          kubectl describe deploy/churn-service | tail -20
-          kubectl logs deploy/churn-service --tail=30 || true
+          kubectl describe deploy/housing-service | tail -20
+          kubectl logs deploy/housing-service --tail=30 || true
