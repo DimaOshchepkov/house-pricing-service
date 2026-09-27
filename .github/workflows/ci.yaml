@@ -81,14 +81,15 @@ jobs:
 
       - name: подтягиваем секреты
         env:
-          DB_PASSWORD: $ {{ secrets.DB_PASSWORD }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
         run: |
-          kubectl create secret generic churn-secrets \
+          kubectl create secret generic housing-secrets \
           --from-literal=POSTGRES_PASSWORD="$DB_PASSWORD" \
-          --from-literal=DATABASE_URL="postgresql+asyncpg://postgres:$DB_PASSWORD@postgres:5432/churn"
+          --from-literal=DATABASE_URL="postgresql+asyncpg://postgres:$DB_PASSWORD@postgres:5432/house"
       
       - name: база
         run: |
+          kubectl apply -f k8s/configmap.yaml
           kubectl apply -f k8s/postgres.yaml
           kubectl rollout status deploy/postgres --timeout=180s
       
